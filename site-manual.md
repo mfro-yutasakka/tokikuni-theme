@@ -18,12 +18,18 @@
 ## 1. ログイン情報
 
 ### WordPress管理画面
-- **URL**: http://round-saga-0574.under.jp/wordpress/wp-admin/
+- **ログインURL**: http://round-saga-0574.under.jp/wordpress/login_10894
 - **ユーザー名**: `tokikuni-admin`
 - **パスワード**: `Tk@2026shiho!`
+- ログイン画面にひらがなの画像認証が表示されます。表示された文字をそのまま入力してください。
 
 > パスワードはログイン後「ユーザー → プロフィール」から変更できます。
-> SiteGuardプラグインにより、ログインURLが変更されている場合があります（後述）。
+
+> **重要：ログインURLについて**
+> セキュリティ対策（SiteGuardプラグイン）により、通常のWordPressログインURL（`/wp-login.php`）ではログインできません。
+> Googleなどで「WordPress ログイン」と検索して出てくる一般的なログイン方法（`/wp-login.php` や `/wp-admin/` に直接アクセス）では**ログインページが表示されない場合があります**。
+> 必ず上記の専用ログインURL（`/login_10894`）をブックマークしてご利用ください。
+> なお、`/wp-admin/` にアクセスした場合は自動でリダイレクトされます。
 
 ### FTP情報（テーマファイルの直接編集時）
 - **サーバー**: ftp-1.lolipop.jp
@@ -305,10 +311,11 @@ SiteGuardにより以下の保護が有効です：
 ## 11. トラブルシューティング
 
 ### ログインできない
-1. まず http://round-saga-0574.under.jp/wordpress/wp-admin/ にアクセス
-2. SiteGuardによりURLが変わっている場合、自動でリダイレクトされます
-3. 画像認証（ひらがな）が表示される場合は、正しく入力してください
-4. それでもダメな場合はFTPで `/wordpress/wp-content/plugins/siteguard/` フォルダ名を変更（例: `siteguard_off`）するとSiteGuardが無効化されます
+1. 正規のログインURLは http://round-saga-0574.under.jp/wordpress/login_10894 です
+2. **「WordPress ログイン」で検索して出てくる一般的なURL（`/wp-login.php`）ではログインできません。** セキュリティ対策のためURLが変更されています
+3. `/wp-admin/` にアクセスすると自動でリダイレクトされるので、こちらでもOKです
+4. ひらがなの画像認証が表示されるので、表示された文字を正しく入力してください
+5. それでもダメな場合はFTPで `/wordpress/wp-content/plugins/siteguard/` フォルダ名を変更（例: `siteguard_off`）するとSiteGuardが無効化されます
 
 ### サイトが真っ白になった（White Screen）
 1. FTPでサーバーに接続
