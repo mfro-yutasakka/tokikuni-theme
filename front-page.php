@@ -119,11 +119,15 @@ $check_svg_24 = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" str
           </div>
           <div class="care-grid">
             <?php
-            $svc_titles = array(1 => '初回無料相談', 2 => '不動産登記', 3 => '商業登記', 4 => '相続登記', 5 => '債務整理');
-            $svc_prices = array(1 => '無料 / 30分', 2 => '¥40,000〜', 3 => '¥30,000〜', 4 => '¥60,000〜', 5 => '¥30,000〜');
-            for ($i = 1; $i <= 5; $i++) :
-              $title = esc_html(get_theme_mod("service_title_{$i}", $svc_titles[$i]));
-              $price = esc_html(get_theme_mod("service_price_{$i}", $svc_prices[$i]));
+            $svc_count = intval(get_theme_mod('service_count', 5));
+            if ($svc_count < 1) $svc_count = 1;
+            if ($svc_count > 12) $svc_count = 12;
+            $svc_titles_d = array(1 => '初回無料相談', 2 => '不動産登記', 3 => '商業登記', 4 => '相続登記', 5 => '債務整理');
+            $svc_prices_d = array(1 => '無料 / 30分', 2 => '¥40,000〜', 3 => '¥30,000〜', 4 => '¥60,000〜', 5 => '¥30,000〜');
+            for ($i = 1; $i <= $svc_count; $i++) :
+              $title = esc_html(get_theme_mod("service_title_{$i}", isset($svc_titles_d[$i]) ? $svc_titles_d[$i] : ''));
+              $price = esc_html(get_theme_mod("service_price_{$i}", isset($svc_prices_d[$i]) ? $svc_prices_d[$i] : ''));
+              if (empty($title)) continue;
             ?>
             <article class="care-card animate-on-scroll">
               <div class="care-card-icon"><?php echo $check_svg_24; ?></div>
@@ -241,10 +245,22 @@ $check_svg_24 = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" str
             <h3><?php echo $office_name; ?></h3>
             <p class="panel-copy"><?php echo $address; ?></p>
             <ul class="access-list">
-              <li><?php echo $address; ?></li>
-              <li><?php echo esc_html(get_theme_mod('access_area', '一宮市エリア')); ?></li>
+              <?php
+              $access_item_count = intval(get_theme_mod('access_item_count', 2));
+              if ($access_item_count < 1) $access_item_count = 1;
+              if ($access_item_count > 6) $access_item_count = 6;
+              $access_item_defaults = array(
+                1 => '〒491-0858 愛知県一宮市栄２丁目２番５号スクエア栄801号',
+                2 => '愛知・岐阜・三重',
+              );
+              for ($ai = 1; $ai <= $access_item_count; $ai++) :
+                $item = esc_html(get_theme_mod("access_item_{$ai}", isset($access_item_defaults[$ai]) ? $access_item_defaults[$ai] : ''));
+                if (empty($item)) continue;
+              ?>
+              <li><?php echo $item; ?></li>
+              <?php endfor; ?>
             </ul>
-            <?php echo $office_name; ?><?php echo esc_html(get_theme_mod('access_note', 'へのアクセスの詳細はお電話でお問い合わせください。')); ?>
+            <p class="panel-note"><?php echo $office_name; ?><?php echo esc_html(get_theme_mod('access_note', '尾張一宮駅から徒歩5分　駐車場有')); ?></p>
           </div>
           <div class="map-frame">
             <iframe

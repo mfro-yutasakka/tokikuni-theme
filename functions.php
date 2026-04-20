@@ -26,6 +26,134 @@ add_action('wp_enqueue_scripts', 'tokikuni_enqueue_styles');
 function tokikuni_customize_register($wp_customize) {
 
     // ==============================
+    // サイトカラー（基本）
+    // ==============================
+    $wp_customize->add_section('tokikuni_colors', array(
+        'title'    => 'サイトカラー（基本）',
+        'priority' => 29,
+    ));
+
+    $color_settings = array(
+        'site_bg_color' => array(
+            'label'   => '背景色',
+            'desc'    => 'サイト全体の背景色',
+            'default' => '#F0F7FC',
+        ),
+        'site_primary_color' => array(
+            'label'   => 'メインカラー',
+            'desc'    => 'ボタン・見出し・アイコンなどの色',
+            'default' => '#1A5276',
+        ),
+        'site_accent_color' => array(
+            'label'   => 'アクセントカラー',
+            'desc'    => '装飾やホバー時の色',
+            'default' => '#2E86C1',
+        ),
+        'site_ink_color' => array(
+            'label'   => '文字色',
+            'desc'    => '本文テキストの色',
+            'default' => '#1A2530',
+        ),
+        'site_surface_color' => array(
+            'label'   => 'カード背景色',
+            'desc'    => 'カードやパネルの背景色',
+            'default' => '#ffffff',
+        ),
+    );
+
+    foreach ($color_settings as $id => $opt) {
+        $wp_customize->add_setting($id, array(
+            'default'           => $opt['default'],
+            'sanitize_callback' => 'sanitize_hex_color',
+            'transport'         => 'postMessage',
+        ));
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, $id, array(
+            'label'       => $opt['label'],
+            'description' => $opt['desc'],
+            'section'     => 'tokikuni_colors',
+        )));
+    }
+
+    // ==============================
+    // セクション別カラー
+    // ==============================
+    $wp_customize->add_section('tokikuni_section_colors', array(
+        'title'    => 'サイトカラー（セクション別）',
+        'priority' => 29,
+    ));
+
+    $section_colors = array(
+        'color_header_bg' => array(
+            'label'   => 'ヘッダー背景色',
+            'desc'    => '上部ヘッダーの背景色（空欄で背景色と同じ）',
+            'default' => '',
+        ),
+        'color_hero_bg' => array(
+            'label'   => 'ヒーロー（トップ）背景色',
+            'desc'    => 'トップのメインビジュアル部分',
+            'default' => '',
+        ),
+        'color_quickinfo_bg' => array(
+            'label'   => '基本情報バー背景色',
+            'desc'    => '営業時間などの情報バー',
+            'default' => '',
+        ),
+        'color_about_bg' => array(
+            'label'   => '事務所について 背景色',
+            'desc'    => '',
+            'default' => '',
+        ),
+        'color_services_bg' => array(
+            'label'   => '業務内容 背景色',
+            'desc'    => '',
+            'default' => '',
+        ),
+        'color_gallery_bg' => array(
+            'label'   => 'ギャラリー 背景色',
+            'desc'    => '',
+            'default' => '',
+        ),
+        'color_flow_bg' => array(
+            'label'   => 'ご相談の流れ 背景色',
+            'desc'    => '',
+            'default' => '',
+        ),
+        'color_hours_bg' => array(
+            'label'   => '受付時間・アクセス 背景色',
+            'desc'    => '',
+            'default' => '',
+        ),
+        'color_faq_bg' => array(
+            'label'   => 'よくある質問 背景色',
+            'desc'    => '',
+            'default' => '',
+        ),
+        'color_contact_bg' => array(
+            'label'   => 'お問い合わせ 背景色',
+            'desc'    => 'お問い合わせバーの背景色',
+            'default' => '',
+        ),
+        'color_footer_bg' => array(
+            'label'   => 'フッター背景色',
+            'desc'    => 'ページ最下部',
+            'default' => '',
+        ),
+    );
+
+    foreach ($section_colors as $id => $opt) {
+        $wp_customize->add_setting($id, array(
+            'default'           => $opt['default'],
+            'sanitize_callback' => 'sanitize_hex_color',
+            'transport'         => 'postMessage',
+        ));
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, $id, array(
+            'label'       => $opt['label'],
+            'description' => $opt['desc'],
+            'section'     => 'tokikuni_section_colors',
+        )));
+    }
+
+    // ==============================
     // 基本情報セクション
     // ==============================
     $wp_customize->add_section('tokikuni_basic', array(
@@ -226,24 +354,34 @@ function tokikuni_customize_register($wp_customize) {
         'priority' => 33,
     ));
 
-    for ($i = 1; $i <= 5; $i++) {
-        $svc_titles = array(
-            1 => '初回無料相談',
-            2 => '不動産登記',
-            3 => '商業登記',
-            4 => '相続登記',
-            5 => '債務整理',
-        );
-        $svc_prices = array(
-            1 => '無料 / 30分',
-            2 => '¥40,000〜',
-            3 => '¥30,000〜',
-            4 => '¥60,000〜',
-            5 => '¥30,000〜',
-        );
+    // 表示数の設定
+    $wp_customize->add_setting('service_count', array(
+        'default'           => 5,
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('service_count', array(
+        'label'       => '表示する業務の数',
+        'description' => '1〜12の間で選択してください。',
+        'section'     => 'tokikuni_services',
+        'type'        => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 12, 'step' => 1),
+        'priority'    => 1,
+    ));
 
+    $svc_titles_defaults = array(
+        1 => '初回無料相談', 2 => '不動産登記', 3 => '商業登記',
+        4 => '相続登記', 5 => '債務整理', 6 => '', 7 => '',
+        8 => '', 9 => '', 10 => '', 11 => '', 12 => '',
+    );
+    $svc_prices_defaults = array(
+        1 => '無料 / 30分', 2 => '¥40,000〜', 3 => '¥30,000〜',
+        4 => '¥60,000〜', 5 => '¥30,000〜', 6 => '', 7 => '',
+        8 => '', 9 => '', 10 => '', 11 => '', 12 => '',
+    );
+
+    for ($i = 1; $i <= 12; $i++) {
         $wp_customize->add_setting("service_title_{$i}", array(
-            'default'           => $svc_titles[$i],
+            'default'           => $svc_titles_defaults[$i],
             'sanitize_callback' => 'sanitize_text_field',
         ));
         $wp_customize->add_control("service_title_{$i}", array(
@@ -253,7 +391,7 @@ function tokikuni_customize_register($wp_customize) {
         ));
 
         $wp_customize->add_setting("service_price_{$i}", array(
-            'default'           => $svc_prices[$i],
+            'default'           => $svc_prices_defaults[$i],
             'sanitize_callback' => 'sanitize_text_field',
         ));
         $wp_customize->add_control("service_price_{$i}", array(
@@ -522,18 +660,38 @@ function tokikuni_customize_register($wp_customize) {
         'type'    => 'text',
     ));
 
-    $wp_customize->add_setting('access_area', array(
-        'default'           => '一宮市エリア',
-        'sanitize_callback' => 'sanitize_text_field',
+    // アクセス情報の項目数
+    $wp_customize->add_setting('access_item_count', array(
+        'default'           => 2,
+        'sanitize_callback' => 'absint',
     ));
-    $wp_customize->add_control('access_area', array(
-        'label'   => 'エリア情報',
-        'section' => 'tokikuni_access',
-        'type'    => 'text',
+    $wp_customize->add_control('access_item_count', array(
+        'label'       => '情報項目の数',
+        'description' => '住所・エリアなどのリスト項目数（1〜6）',
+        'section'     => 'tokikuni_access',
+        'type'        => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 6, 'step' => 1),
     ));
 
+    $access_item_defaults = array(
+        1 => '〒491-0858 愛知県一宮市栄２丁目２番５号スクエア栄801号',
+        2 => '愛知・岐阜・三重',
+        3 => '', 4 => '', 5 => '', 6 => '',
+    );
+    for ($i = 1; $i <= 6; $i++) {
+        $wp_customize->add_setting("access_item_{$i}", array(
+            'default'           => $access_item_defaults[$i],
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+        $wp_customize->add_control("access_item_{$i}", array(
+            'label'   => "情報項目 {$i}",
+            'section' => 'tokikuni_access',
+            'type'    => 'text',
+        ));
+    }
+
     $wp_customize->add_setting('access_note', array(
-        'default'           => 'へのアクセスの詳細はお電話でお問い合わせください。',
+        'default'           => '尾張一宮駅から徒歩5分　駐車場有',
         'sanitize_callback' => 'sanitize_text_field',
     ));
     $wp_customize->add_control('access_note', array(
@@ -579,6 +737,111 @@ function tokikuni_customize_register($wp_customize) {
     ));
 }
 add_action('customize_register', 'tokikuni_customize_register');
+
+// カスタマイザーのカラー設定をインラインCSSで出力
+function tokikuni_custom_colors_css() {
+    $css = '';
+
+    // 基本カラー
+    $bg      = get_theme_mod('site_bg_color', '#F0F7FC');
+    $primary = get_theme_mod('site_primary_color', '#1A5276');
+    $accent  = get_theme_mod('site_accent_color', '#2E86C1');
+    $ink     = get_theme_mod('site_ink_color', '#1A2530');
+    $surface = get_theme_mod('site_surface_color', '#ffffff');
+
+    $has_base = ($bg !== '#F0F7FC' || $primary !== '#1A5276' || $accent !== '#2E86C1' || $ink !== '#1A2530' || $surface !== '#ffffff');
+
+    if ($has_base) {
+        $css .= ':root{';
+        if ($bg !== '#F0F7FC')      $css .= '--bg:' . esc_attr($bg) . ';';
+        if ($primary !== '#1A5276') $css .= '--primary:' . esc_attr($primary) . ';';
+        if ($accent !== '#2E86C1')  $css .= '--accent:' . esc_attr($accent) . ';--secondary:' . esc_attr($accent) . ';';
+        if ($ink !== '#1A2530')     $css .= '--ink:' . esc_attr($ink) . ';';
+        if ($surface !== '#ffffff') $css .= '--surface:' . esc_attr($surface) . ';';
+        if ($bg !== '#F0F7FC' || $accent !== '#2E86C1') {
+            $css .= '--accent-soft:color-mix(in srgb,' . esc_attr($accent) . ' 15%,' . esc_attr($bg) . ');';
+        }
+        $css .= '}';
+    }
+
+    // セクション別カラー
+    $section_map = array(
+        'color_header_bg'    => '.site-header',
+        'color_hero_bg'      => '.hero',
+        'color_quickinfo_bg' => '.quick-info',
+        'color_about_bg'     => '#about',
+        'color_services_bg'  => '#guide',
+        'color_gallery_bg'   => '#gallery',
+        'color_flow_bg'      => 'section[aria-label="ご相談から完了まで"]',
+        'color_hours_bg'     => '#hours',
+        'color_faq_bg'       => '#faq',
+        'color_contact_bg'   => '.contact-shell',
+        'color_footer_bg'    => '.site-footer',
+    );
+    foreach ($section_map as $setting => $selector) {
+        $color = get_theme_mod($setting, '');
+        if ($color) {
+            $css .= $selector . '{background:' . esc_attr($color) . '!important}';
+        }
+    }
+
+    if ($css) {
+        echo '<style id="tokikuni-custom-colors">' . $css . '</style>';
+    }
+}
+add_action('wp_head', 'tokikuni_custom_colors_css', 20);
+
+// カスタマイザーのリアルタイムプレビュー用JS
+function tokikuni_customize_preview_js() {
+    $js = '
+    var baseMap = {
+        "site_bg_color":      "--bg",
+        "site_primary_color": "--primary",
+        "site_accent_color":  "--accent",
+        "site_ink_color":     "--ink",
+        "site_surface_color": "--surface"
+    };
+    Object.keys(baseMap).forEach(function(id) {
+        wp.customize(id, function(value) {
+            value.bind(function(newval) {
+                document.documentElement.style.setProperty(baseMap[id], newval);
+                if (id === "site_accent_color") {
+                    document.documentElement.style.setProperty("--secondary", newval);
+                }
+                if (id === "site_bg_color" || id === "site_accent_color") {
+                    var bg = wp.customize("site_bg_color")();
+                    var ac = wp.customize("site_accent_color")();
+                    document.documentElement.style.setProperty("--accent-soft", "color-mix(in srgb, " + ac + " 15%, " + bg + ")");
+                }
+            });
+        });
+    });
+
+    var sectionMap = {
+        "color_header_bg":    ".site-header",
+        "color_hero_bg":      ".hero",
+        "color_quickinfo_bg": ".quick-info",
+        "color_about_bg":     "#about",
+        "color_services_bg":  "#guide",
+        "color_gallery_bg":   "#gallery",
+        "color_flow_bg":      "section[aria-label=\'ご相談から完了まで\']",
+        "color_hours_bg":     "#hours",
+        "color_faq_bg":       "#faq",
+        "color_contact_bg":   ".contact-shell",
+        "color_footer_bg":    ".site-footer"
+    };
+    Object.keys(sectionMap).forEach(function(id) {
+        wp.customize(id, function(value) {
+            value.bind(function(newval) {
+                var el = document.querySelector(sectionMap[id]);
+                if (el) el.style.background = newval || "";
+            });
+        });
+    });
+    ';
+    wp_add_inline_script('customize-preview', $js);
+}
+add_action('customize_preview_init', 'tokikuni_customize_preview_js');
 
 // ヘルパー関数
 function tokikuni_get($setting, $default = '') {
