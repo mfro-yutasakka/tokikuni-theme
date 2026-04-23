@@ -769,43 +769,75 @@ body.nav-open .nav-backdrop {
   color: var(--primary);
 }
 
-/* ========== Gallery Slider ========== */
-.gallery-slider {
-  position: relative;
-  overflow: hidden;
+/* ========== Case Study Cards ========== */
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
-.gallery-track {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 4px;
-}
-.gallery-track::-webkit-scrollbar { display: none; }
-.gallery-slide {
-  flex: 0 0 calc(33.333% - 11px);
-  scroll-snap-align: start;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--surface);
+.case-card {
+  border-radius: var(--radius-md);
   border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform 300ms ease, box-shadow 300ms ease;
 }
-.gallery-slide img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  display: block;
+@media (hover: hover) {
+  .case-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+  }
 }
-.gallery-caption {
-  padding: 10px 14px;
-  font-size: 13px;
+.case-card-header {
+  padding: 20px 24px 16px;
+  border-bottom: 2px solid var(--primary);
+}
+.case-card-header h3 {
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.5;
   color: var(--ink);
-  text-align: center;
+}
+.case-card-subtitle {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.case-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.case-table td {
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+.case-label {
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.case-value {
+  text-align: right;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.case-total td {
+  border-bottom: none;
+  border-top: 2px solid var(--primary);
+  padding-top: 12px;
+  padding-bottom: 16px;
+}
+.case-total .case-label {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 15px;
+}
+.case-total .case-value {
+  font-size: 16px;
+  color: var(--primary);
 }
 .gallery-nav {
   display: flex;
@@ -1132,8 +1164,8 @@ body.nav-open .nav-backdrop {
   .hours-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .gallery-slide {
-    flex: 0 0 calc(50% - 8px);
+  .case-grid {
+    grid-template-columns: 1fr;
   }
   .contact-actions {
     justify-content: flex-start;
@@ -1157,8 +1189,8 @@ body.nav-open .nav-backdrop {
   .care-grid {
     grid-template-columns: 1fr;
   }
-  .gallery-slide {
-    flex: 0 0 calc(80% - 8px);
+  .case-table td {
+    padding: 8px 16px;
   }
   .quick-info-inner {
     grid-template-columns: 1fr;

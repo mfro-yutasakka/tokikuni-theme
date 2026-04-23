@@ -402,42 +402,87 @@ function tokikuni_customize_register($wp_customize) {
     }
 
     // ==============================
-    // 事例紹介
+    // 事例紹介（費用事例カード）
     // ==============================
     $wp_customize->add_section('tokikuni_gallery', array(
         'title'    => '事例紹介',
         'priority' => 34,
     ));
 
-    $wp_customize->add_setting('gallery_count', array(
-        'default'           => 6,
+    $wp_customize->add_setting('case_count', array(
+        'default'           => 1,
         'sanitize_callback' => 'absint',
     ));
-    $wp_customize->add_control('gallery_count', array(
+    $wp_customize->add_control('case_count', array(
         'label'       => '表示する事例の数',
-        'description' => '1〜12の間で選択してください。',
+        'description' => '1〜6の間で選択してください。',
         'section'     => 'tokikuni_gallery',
         'type'        => 'number',
-        'input_attrs' => array('min' => 1, 'max' => 12, 'step' => 1),
-        'priority'    => 0,
+        'input_attrs' => array('min' => 1, 'max' => 6, 'step' => 1),
+        'priority'    => 1,
     ));
 
-    for ($i = 1; $i <= 12; $i++) {
-        $wp_customize->add_setting("gallery_image_{$i}", array(
-            'default'           => '',
-            'sanitize_callback' => 'esc_url_raw',
-        ));
-        $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "gallery_image_{$i}", array(
-            'label'   => "事例{$i} 画像",
-            'section' => 'tokikuni_gallery',
-        )));
+    $case_defaults = array(
+        1 => array(
+            'title'    => '相続登記（戸籍等の書類を持参したケース）',
+            'subtitle' => '土地：1000万円　建物：500万円',
+            'rows'     => "司法書士報酬|55,000円（税込み）\n登録免許税|60,000円\nその他諸費用|10,000円",
+            'total_label' => '合計',
+            'total_value' => '100,000円',
+        ),
+    );
 
-        $wp_customize->add_setting("gallery_alt_{$i}", array(
-            'default'           => '',
+    for ($i = 1; $i <= 6; $i++) {
+        $def = isset($case_defaults[$i]) ? $case_defaults[$i] : array('title' => '', 'subtitle' => '', 'rows' => '', 'total_label' => '合計', 'total_value' => '');
+
+        $wp_customize->add_setting("case_title_{$i}", array(
+            'default'           => $def['title'],
             'sanitize_callback' => 'sanitize_text_field',
         ));
-        $wp_customize->add_control("gallery_alt_{$i}", array(
-            'label'   => "事例{$i} タイトル",
+        $wp_customize->add_control("case_title_{$i}", array(
+            'label'   => "━━ 事例{$i} ━━ タイトル",
+            'section' => 'tokikuni_gallery',
+            'type'    => 'text',
+        ));
+
+        $wp_customize->add_setting("case_subtitle_{$i}", array(
+            'default'           => $def['subtitle'],
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+        $wp_customize->add_control("case_subtitle_{$i}", array(
+            'label'       => "事例{$i} 条件",
+            'description' => '例: 土地：1000万円　建物：500万円',
+            'section'     => 'tokikuni_gallery',
+            'type'        => 'text',
+        ));
+
+        $wp_customize->add_setting("case_rows_{$i}", array(
+            'default'           => $def['rows'],
+            'sanitize_callback' => 'sanitize_textarea_field',
+        ));
+        $wp_customize->add_control("case_rows_{$i}", array(
+            'label'       => "事例{$i} 費用明細",
+            'description' => '1行に1項目。項目名と金額を「|」で区切ってください。例:' . "\n" . '司法書士報酬|55,000円',
+            'section'     => 'tokikuni_gallery',
+            'type'        => 'textarea',
+        ));
+
+        $wp_customize->add_setting("case_total_label_{$i}", array(
+            'default'           => $def['total_label'],
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+        $wp_customize->add_control("case_total_label_{$i}", array(
+            'label'   => "事例{$i} 合計ラベル",
+            'section' => 'tokikuni_gallery',
+            'type'    => 'text',
+        ));
+
+        $wp_customize->add_setting("case_total_value_{$i}", array(
+            'default'           => $def['total_value'],
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+        $wp_customize->add_control("case_total_value_{$i}", array(
+            'label'   => "事例{$i} 合計金額",
             'section' => 'tokikuni_gallery',
             'type'    => 'text',
         ));

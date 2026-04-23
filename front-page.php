@@ -141,40 +141,62 @@ $check_svg_24 = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" str
     </section>
 
     <!-- 事例紹介 -->
-    <section class="section section-alt" id="gallery" aria-label="事例紹介">
+    <section class="section section-alt" id="cases" aria-label="事例紹介">
       <div class="container">
         <div class="section-head animate-on-scroll">
           <p class="section-eyebrow">CASES / 事例紹介</p>
           <h2><?php echo esc_html(get_theme_mod('gallery_heading', '事例紹介')); ?></h2>
         </div>
-        <div class="gallery-slider">
-          <div class="gallery-track" data-gallery-track>
-            <?php
-            $gallery_count = intval(get_theme_mod('gallery_count', 6));
-            if ($gallery_count < 1) $gallery_count = 1;
-            if ($gallery_count > 12) $gallery_count = 12;
-            for ($i = 1; $i <= $gallery_count; $i++) :
-              $img_url = esc_url(get_theme_mod("gallery_image_{$i}", ''));
-              $img_alt = esc_attr(get_theme_mod("gallery_alt_{$i}", ''));
-              if (empty($img_url)) continue;
-            ?>
-            <figure class="gallery-slide">
-              <img src="<?php echo $img_url; ?>" alt="<?php echo $img_alt; ?>" width="600" height="450" loading="lazy">
-              <?php if ($img_alt) : ?>
-              <figcaption class="gallery-caption"><?php echo $img_alt; ?></figcaption>
+        <div class="case-grid">
+          <?php
+          $case_count = intval(get_theme_mod('case_count', 1));
+          if ($case_count < 1) $case_count = 1;
+          if ($case_count > 6) $case_count = 6;
+          $case_def_title = array(1 => '相続登記（戸籍等の書類を持参したケース）');
+          $case_def_subtitle = array(1 => '土地：1000万円　建物：500万円');
+          $case_def_rows = array(1 => "司法書士報酬|55,000円（税込み）\n登録免許税|60,000円\nその他諸費用|10,000円");
+          for ($ci = 1; $ci <= $case_count; $ci++) :
+            $c_title = esc_html(get_theme_mod("case_title_{$ci}", isset($case_def_title[$ci]) ? $case_def_title[$ci] : ''));
+            $c_subtitle = esc_html(get_theme_mod("case_subtitle_{$ci}", isset($case_def_subtitle[$ci]) ? $case_def_subtitle[$ci] : ''));
+            $c_rows_raw = get_theme_mod("case_rows_{$ci}", isset($case_def_rows[$ci]) ? $case_def_rows[$ci] : '');
+            $c_total_label = esc_html(get_theme_mod("case_total_label_{$ci}", '合計'));
+            $c_total_value = esc_html(get_theme_mod("case_total_value_{$ci}", $ci === 1 ? '100,000円' : ''));
+            if (empty($c_title)) continue;
+          ?>
+          <article class="case-card animate-on-scroll">
+            <div class="case-card-header">
+              <h3><?php echo $c_title; ?></h3>
+              <?php if ($c_subtitle) : ?>
+              <p class="case-card-subtitle"><?php echo $c_subtitle; ?></p>
               <?php endif; ?>
-            </figure>
-            <?php endfor; ?>
-          </div>
-          <div class="gallery-nav">
-            <button class="gallery-btn" data-gallery-prev aria-label="前へ">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <div class="gallery-dots" data-gallery-dots></div>
-            <button class="gallery-btn" data-gallery-next aria-label="次へ">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          </div>
+            </div>
+            <table class="case-table">
+              <tbody>
+                <?php
+                $rows = array_filter(array_map('trim', explode("\n", $c_rows_raw)));
+                foreach ($rows as $row) :
+                  $parts = explode('|', $row, 2);
+                  if (count($parts) < 2) continue;
+                  $label = esc_html(trim($parts[0]));
+                  $value = esc_html(trim($parts[1]));
+                ?>
+                <tr>
+                  <td class="case-label"><?php echo $label; ?></td>
+                  <td class="case-value"><?php echo $value; ?></td>
+                </tr>
+                <?php endforeach; ?>
+              </tbody>
+              <?php if ($c_total_value) : ?>
+              <tfoot>
+                <tr class="case-total">
+                  <td class="case-label"><?php echo $c_total_label; ?></td>
+                  <td class="case-value"><?php echo $c_total_value; ?></td>
+                </tr>
+              </tfoot>
+              <?php endif; ?>
+            </table>
+          </article>
+          <?php endfor; ?>
         </div>
       </div>
     </section>
