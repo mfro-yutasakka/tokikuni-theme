@@ -140,30 +140,29 @@ $check_svg_24 = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" str
       </div>
     </section>
 
-    <!-- ギャラリー -->
-    <section class="section section-alt" id="gallery" aria-label="事務所をご覧ください">
+    <!-- 事例紹介 -->
+    <section class="section section-alt" id="gallery" aria-label="事例紹介">
       <div class="container">
         <div class="section-head animate-on-scroll">
-          <p class="section-eyebrow">OFFICE / 事務所の様子</p>
-          <h2><?php echo esc_html(get_theme_mod('gallery_heading', '事務所をご覧ください')); ?></h2>
+          <p class="section-eyebrow">CASES / 事例紹介</p>
+          <h2><?php echo esc_html(get_theme_mod('gallery_heading', '事例紹介')); ?></h2>
         </div>
         <div class="gallery-slider">
           <div class="gallery-track" data-gallery-track>
             <?php
-            $gallery_defaults = array(
-              1 => array('url' => 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=450&fit=crop&q=80', 'alt' => '登記相談'),
-              2 => array('url' => 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=450&fit=crop&q=80', 'alt' => '書類作成'),
-              3 => array('url' => 'https://images.unsplash.com/photo-1497215842964-222b430dc094?w=600&h=450&fit=crop&q=80', 'alt' => '事務所の様子'),
-              4 => array('url' => 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=450&fit=crop&q=80', 'alt' => '打ち合わせ'),
-              5 => array('url' => 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=450&fit=crop&q=80', 'alt' => '不動産登記'),
-              6 => array('url' => 'https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=600&h=450&fit=crop&q=80', 'alt' => '丁寧なサポート'),
-            );
-            for ($i = 1; $i <= 6; $i++) :
-              $img_url = esc_url(get_theme_mod("gallery_image_{$i}", $gallery_defaults[$i]['url']));
-              $img_alt = esc_attr(get_theme_mod("gallery_alt_{$i}", $gallery_defaults[$i]['alt']));
+            $gallery_count = intval(get_theme_mod('gallery_count', 6));
+            if ($gallery_count < 1) $gallery_count = 1;
+            if ($gallery_count > 12) $gallery_count = 12;
+            for ($i = 1; $i <= $gallery_count; $i++) :
+              $img_url = esc_url(get_theme_mod("gallery_image_{$i}", ''));
+              $img_alt = esc_attr(get_theme_mod("gallery_alt_{$i}", ''));
+              if (empty($img_url)) continue;
             ?>
             <figure class="gallery-slide">
               <img src="<?php echo $img_url; ?>" alt="<?php echo $img_alt; ?>" width="600" height="450" loading="lazy">
+              <?php if ($img_alt) : ?>
+              <figcaption class="gallery-caption"><?php echo $img_alt; ?></figcaption>
+              <?php endif; ?>
             </figure>
             <?php endfor; ?>
           </div>

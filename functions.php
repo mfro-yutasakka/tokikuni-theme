@@ -402,38 +402,42 @@ function tokikuni_customize_register($wp_customize) {
     }
 
     // ==============================
-    // ギャラリー画像
+    // 事例紹介
     // ==============================
     $wp_customize->add_section('tokikuni_gallery', array(
-        'title'    => 'ギャラリー画像',
+        'title'    => '事例紹介',
         'priority' => 34,
     ));
 
-    $gallery_defaults = array(
-        1 => array('url' => 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=450&fit=crop&q=80', 'alt' => '登記相談'),
-        2 => array('url' => 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=450&fit=crop&q=80', 'alt' => '書類作成'),
-        3 => array('url' => 'https://images.unsplash.com/photo-1497215842964-222b430dc094?w=600&h=450&fit=crop&q=80', 'alt' => '事務所の様子'),
-        4 => array('url' => 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=450&fit=crop&q=80', 'alt' => '打ち合わせ'),
-        5 => array('url' => 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=450&fit=crop&q=80', 'alt' => '不動産登記'),
-        6 => array('url' => 'https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=600&h=450&fit=crop&q=80', 'alt' => '丁寧なサポート'),
-    );
+    $wp_customize->add_setting('gallery_count', array(
+        'default'           => 6,
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('gallery_count', array(
+        'label'       => '表示する事例の数',
+        'description' => '1〜12の間で選択してください。',
+        'section'     => 'tokikuni_gallery',
+        'type'        => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 12, 'step' => 1),
+        'priority'    => 0,
+    ));
 
-    for ($i = 1; $i <= 6; $i++) {
+    for ($i = 1; $i <= 12; $i++) {
         $wp_customize->add_setting("gallery_image_{$i}", array(
-            'default'           => $gallery_defaults[$i]['url'],
+            'default'           => '',
             'sanitize_callback' => 'esc_url_raw',
         ));
         $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "gallery_image_{$i}", array(
-            'label'   => "ギャラリー画像 {$i}",
+            'label'   => "事例{$i} 画像",
             'section' => 'tokikuni_gallery',
         )));
 
         $wp_customize->add_setting("gallery_alt_{$i}", array(
-            'default'           => $gallery_defaults[$i]['alt'],
+            'default'           => '',
             'sanitize_callback' => 'sanitize_text_field',
         ));
         $wp_customize->add_control("gallery_alt_{$i}", array(
-            'label'   => "画像{$i} 説明文",
+            'label'   => "事例{$i} タイトル",
             'section' => 'tokikuni_gallery',
             'type'    => 'text',
         ));
@@ -525,10 +529,10 @@ function tokikuni_customize_register($wp_customize) {
     ));
 
     // ==============================
-    // ギャラリー（見出し追加）
+    // 事例紹介（見出し）
     // ==============================
     $wp_customize->add_setting('gallery_heading', array(
-        'default'           => '事務所をご覧ください',
+        'default'           => '事例紹介',
         'sanitize_callback' => 'sanitize_text_field',
     ));
     $wp_customize->add_control('gallery_heading', array(

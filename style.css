@@ -799,6 +799,14 @@ body.nav-open .nav-backdrop {
   object-fit: cover;
   display: block;
 }
+.gallery-caption {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: center;
+}
 .gallery-nav {
   display: flex;
   justify-content: center;
